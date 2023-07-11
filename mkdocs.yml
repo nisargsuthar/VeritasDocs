@@ -1,4 +1,5 @@
 site_name: Veritas Documentation
+site_url: https://nisargsuthar.github.io/VeritasDocs/
 theme:
   name: material
   logo: assets/Veritas.png
@@ -50,6 +51,6 @@ extra:
       link: https://twitter.com/0xNisarg
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/nisargsuthar
-      
+
 copyright: |
   &copy; 2023 <a href="https://github.com/nisargsuthar"  target="_blank" rel="noopener">Nisarg Suthar</a>

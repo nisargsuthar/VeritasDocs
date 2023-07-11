@@ -1,0 +1,52 @@
+site_name: Veritas Documentation
+theme:
+  name: material
+  logo: assets/Veritas.png
+  favicon: assets/Veritas.png
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  language: en
+  palette:
+    - scheme: slate 
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode    
+      primary: teal
+      accent: lime
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline 
+        name: Switch to dark mode
+      primary: teal
+      accent: purple
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+plugins:
+  - social
+extra:
+  social:
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/nisargsuthar
+    - icon: fontawesome/brands/github
+      link: https://github.com/nisargsuthar
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/0xNisarg
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/nisargsuthar
+copyright: |
+  &copy; 2023 <a href="https://github.com/nisargsuthar"  target="_blank" rel="noopener">Nisarg Suthar</a>

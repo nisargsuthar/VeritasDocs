@@ -17,8 +17,8 @@ ab[loader.py > isArtifactB] -->|Yes| as{Artifact Supported?};
 others[...] -->|No| urv[veritas.py > updateRecycleViews];
 others[...] -->|Yes| as{Artifact Supported?};
 as{Artifact Supported?} -->|No| urv[veritas.py > updateRecycleViews];
-as{Artifact Supported?} -->|Yes| can[loader.py > callArtifiactN];
-can[loader.py > callArtifiactN] -->|calls| ant[artifactN.py > artifactNTemplate];
+as{Artifact Supported?} -->|Yes| an[loader.py > isArtifiactN];
+an[loader.py > isArtifiactN] -->|calls| ant[artifactN.py > artifactNTemplate];
 
 ant[artifactN.py > artifactNTemplate] --> |declares| template([artifactNtemplate]);
 ant[artifactN.py > artifactNTemplate] --> |declares| size([artifactNsize]);
@@ -27,19 +27,19 @@ ant[artifactN.py > artifactNTemplate] --> |declares| markers([artifactNmarkers])
 template([artifactNtemplate]) --> |is populated by| abs[offsetter.py > toAbsolute];
 size([artifactNsize]) --> |is populated by| abs[offsetter.py > toAbsolute];
 abs[offsetter.py > toAbsolute] --> |returns| tdata([templatedata]);
-tdata([templatedata]) -->  can[loader.py > callArtifiactN];
-markers([artifactNmarkers]) --> can[loader.py > callArtifiactN];
+tdata([templatedata]) -->  an[loader.py > isArtifiactN];
+markers([artifactNmarkers]) --> an[loader.py > isArtifiactN];
 
 ant[artifactN.py > artifactNTemplate] --> |calls| rf[primer.py > readFile];
 rf[primer.py > readFile] --> |returns| fhd([formattedhexdata]);
 rf[primer.py > readFile] --> |returns| fad([formattedasciidata]);
 
-fhd([formattedhexdata]) --> can[loader.py > callArtifiactN];
-fad([formattedasciidata]) --> can[loader.py > callArtifiactN];
+fhd([formattedhexdata]) --> an[loader.py > isArtifiactN];
+fad([formattedasciidata]) --> an[loader.py > isArtifiactN];
 
-can[loader.py > callArtifiactN] --> hd([hexdata]);
-can[loader.py > callArtifiactN] --> ad([asciidata]);
-can[loader.py > callArtifiactN] --> md([markerdata]);
+an[loader.py > isArtifiactN] --> hd([hexdata]);
+an[loader.py > isArtifiactN] --> ad([asciidata]);
+an[loader.py > isArtifiactN] --> md([markerdata]);
 hd([hexdata]) --> f([first]);
 ad([asciidata]) --> f([first]);
 md([markerdata]) --> s([second]);
@@ -75,12 +75,11 @@ Kivy layout file, solely for GUI. Nothing much to explain here.
 
 ## loader.py
 This module contains all the artifact related functions which are responsible for checking the magic numbers in order to detect the artifact file structure, and proceed with appropriate artifact module to load the correct template.
-For each supported artifact, two functions must be defined:
+For each supported artifact, the following function must be defined:
 
 * isArtifact()
 > Check magic numbers at required offsets in the file structure and return a boolean value.
-* callArtifact()
-> Make a call to the matched artifact template function present in the specific artifact's module, and set the return values as local variables hexdata, asciidata, markerdata and templatedata.
+> In this conditional block, make a call to the matched artifact template function present in the specific artifact's module, and set the return values as local variables hexdata, asciidata, markerdata and templatedata.
 
 !!! note
     Check the `artifact.py` documentation below for more information.
@@ -151,12 +150,11 @@ artifactmarkers.append("\n+{} This is a section of variable size!\n".format(vari
 
 As for the inputs and outputs, an `artifact.py` module should take only one parameter `file_path` to read the file. This must be done using the `readFile()` function present in `primer.py`. There is also a `readPartialFile()` function which is used to only read necessary bytes to determine the magic numbers to determine the type of artifact loaded. This was done for performance optimization.
 
-For each submitted `artifact.py` module, there must be two functions defined in `loader.py`:
+For each submitted `artifact.py` module, there must be a function defined in `loader.py`:
 
 * isArtifact()
 > Must use the `readPartialFile()` to read the artifact loaded only upto the number of bytes necessary to determine the artifact type. `readPartialFile()` takes two parameters `file_path` and `numberofbytestoread`.
-* callArtifact()
-> This function is solely used to call the `artifactTemplate()` function from `artifact.py` module and store the returned data in four lists which are also module-level global variables namely `hexdata`, `asciidata`, `templatedata` & `markerdata` in that order.
+> This function's block is solely used to call the `artifactTemplate()` function from `artifact.py` module and store the returned data in four lists namely `hexdata`, `asciidata`, `templatedata` & `markerdata` in that order.
 
 We already looked at the two lists returned from `artifact.py`, which were `templatedata` and `artifactmarkers`.
 

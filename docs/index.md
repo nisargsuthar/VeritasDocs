@@ -54,11 +54,12 @@ Veritas is not meant to be an advanced hex viewer with functionalities that a re
 * TODO: Finish popups.
 
 ## Supported Artifacts
-* Prefetch: XP, Vista, 7, 8.1, 10, 11
-* TODO: $MFT
-* TODO: Registry files
-* TODO: Images: png, jpeg, jpg, bmp, gif
-* TODO: Documents: pdf
+| NTOS                        | Images          | Documents       |
+|-----------------------------|-----------------|-----------------|
+| :white_check_mark: Prefetch | :clipboard: PNG | :clipboard: PDF |
+| :construction: Registry     | :clipboard: JPG |                 |
+| :clipboard: MFT             | :clipboard: BMP |                 |
+|                             | :clipboard: GIF |                 |
 
 ## Requirements
 * Python >= 3.10.4

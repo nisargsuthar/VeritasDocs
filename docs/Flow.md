@@ -10,9 +10,9 @@ of[veritas.py > openFile] --> lfcb[veritas.py > loadFileCallback];
 lfcb[veritas.py > loadFileCallback] --> lf[loader.py > loadFile];
 lf[loader.py > loadFile] --> aa[loader.py > isArtifactA];
 aa[loader.py > isArtifactA] -->|No| ab[loader.py > isArtifactB];
-ab[loader.py > isArtifactB] -->|No| others[...];
 aa[loader.py > isArtifactA] -->|Yes| as{Artifact Supported?};
 ab[loader.py > isArtifactB] -->|Yes| as{Artifact Supported?};
+ab[loader.py > isArtifactB] -->|No| others[...];
 
 others[...] -->|No| urv[veritas.py > updateRecycleViews];
 others[...] -->|Yes| as{Artifact Supported?};
@@ -20,26 +20,28 @@ as{Artifact Supported?} -->|No| urv[veritas.py > updateRecycleViews];
 as{Artifact Supported?} -->|Yes| an[loader.py > isArtifiactN];
 an[loader.py > isArtifiactN] -->|calls| ant[artifactN.py > artifactNTemplate];
 
-ant[artifactN.py > artifactNTemplate] --> |declares| template([artifactNtemplate]);
-ant[artifactN.py > artifactNTemplate] --> |declares| size([artifactNsize]);
-ant[artifactN.py > artifactNTemplate] --> |declares| markers([artifactNmarkers]);
+ant[artifactN.py > artifactNTemplate] ---> |is populated by contributor| template([artifactNtemplate]);
+ant[artifactN.py > artifactNTemplate] ---> |is populated by contributor| size([artifactNsizes]);
+ant[artifactN.py > artifactNTemplate] ---> |is populated by contributor| markers([artifactNmarkers]);
 
-template([artifactNtemplate]) --> |is populated by| abs[offsetter.py > toAbsolute];
-size([artifactNsize]) --> |is populated by| abs[offsetter.py > toAbsolute];
+template([artifactNtemplate]) --> |passed to| abs[offsetter.py > toAbsolute];
+size([artifactNsizes]) --> |passed to| abs[offsetter.py > toAbsolute];
 abs[offsetter.py > toAbsolute] --> |returns| tdata([templatedata]);
-tdata([templatedata]) -->  an[loader.py > isArtifiactN];
-markers([artifactNmarkers]) --> an[loader.py > isArtifiactN];
+tdata([templatedata]) --> |returns| an[loader.py > isArtifiactN];
+markers([artifactNmarkers]) --> |returns| an[loader.py > isArtifiactN];
 
-ant[artifactN.py > artifactNTemplate] --> |calls| rf[primer.py > readFile];
+ant[artifactN.py > artifactNTemplate] ----> |calls| rf[primer.py > readFile];
 rf[primer.py > readFile] --> |returns| fhd([formattedhexdata]);
 rf[primer.py > readFile] --> |returns| fad([formattedasciidata]);
 
-fhd([formattedhexdata]) --> an[loader.py > isArtifiactN];
-fad([formattedasciidata]) --> an[loader.py > isArtifiactN];
+fhd([formattedhexdata]) --> |returns| an[loader.py > isArtifiactN];
+fad([formattedasciidata]) --> |returns| an[loader.py > isArtifiactN];
 
+an[loader.py > isArtifiactN] --> od([offsetdata]);
 an[loader.py > isArtifiactN] --> hd([hexdata]);
 an[loader.py > isArtifiactN] --> ad([asciidata]);
 an[loader.py > isArtifiactN] --> md([markerdata]);
+od([offsetdata]) --> f([first]);
 hd([hexdata]) --> f([first]);
 ad([asciidata]) --> f([first]);
 md([markerdata]) --> s([second]);
@@ -153,8 +155,22 @@ As for the inputs and outputs, an `artifact.py` module should take only one para
 For each submitted `artifact.py` module, there must be a function defined in `loader.py`:
 
 * isArtifact()
-> Must use the `readPartialFile()` to read the artifact loaded only upto the number of bytes necessary to determine the artifact type. `readPartialFile()` takes two parameters `file_path` and `numberofbytestoread`.
-> This function's block is solely used to call the `artifactTemplate()` function from `artifact.py` module and store the returned data in four lists namely `hexdata`, `asciidata`, `templatedata` & `markerdata` in that order.
+> It consumes one parameter `hexdata` which is defined in `loader.py` using `readPartialFile()`. `readPartialFile()` takes two parameters `file_path` and `numberofbytestoread`.
+>
+> Must pass `hexdata` to read the artifact loaded only upto the number of bytes necessary to determine the artifact type.
+>
+> This function is used to return a boolean value based on checking the magic bytes for an artifact. It must be called from the else-if ladder in the `loadFile()` function which is solely used to call the `artifactTemplate()` function from `artifact.py` module and store the returned data in four lists namely `hexdata`, `asciidata`, `templatedata` & `markerdata` in that order. Chain your artifact block in an `elif` statement and set the variable `artifactsupported` to true.
+
+```python
+elif isArtifact(hexdata):
+		artifactsupported = True
+		hexdata, asciidata, templatedata, markerdata = artifactTemplate(file_path)
+```
+
+!!! note
+    The code maintains a variable `maxmagicseekamongsupportedartifacts` which represents the maximum value to seek for reading a file partially, among all supported artifacts. If your particular artifact's magic number is located at an offset range which exceeds the current value of this variable, update it.
+    
+    For example, if the artifact's magic number is located at decimal offset 12 and its length is 4 bytes, then the range of the magic bytes would be 12-16. 16 being the largest, it becomes the new value for `maxmagicseekamongsupportedartifacts`.
 
 We already looked at the two lists returned from `artifact.py`, which were `templatedata` and `artifactmarkers`.
 
@@ -166,10 +182,7 @@ artifacttemplate = []
 artifactsizes = []
 artifactmarkers = []
 
-getdata = readFile(file_path)
-formattedhexdata = getdata[0]
-formattedasciidata = getdata[1]
-hexdata = getdata[2]
+formattedhexdata, formattedasciidata, hexdata = readFile(file_path)
 ```
 
 And at the end when returning data, the following code:

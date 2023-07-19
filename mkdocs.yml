@@ -6,9 +6,16 @@ theme:
   favicon: assets/Veritas.png
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
-    - toc.integrate
+    - navigation.path
+    - navigation.indexes
+    - navigation.expand
     - navigation.top
+    - navigation.footer
+    - navigation.instant
+    - navigation.instant.prefetch
+    - toc.follow
     - search.suggest
     - search.highlight
     - content.tabs.link
@@ -40,7 +47,26 @@ markdown_extensions:
   - pymdownx.emoji:
       emoji_index: !!python/name:materialx.emoji.twemoji
       emoji_generator: !!python/name:materialx.emoji.to_svg
-
+nav:
+  - Home: index.md
+  - Contribution: Contribution.md
+  - Flow:
+    - Flow  : Flow/index.md
+    - Main Driver Modules:
+      - Flow/MainDriverModules/index.md
+      - veritas.py: Flow/MainDriverModules/veritas.py.md
+      - loader.py: Flow/MainDriverModules/loader.py.md
+    - Artifact Specific Modules:
+      - Flow/ArtifactSpecificModules/index.md
+      - artifact.py: Flow/ArtifactSpecificModules/artifact.py.md
+    - Helper Modules:
+      - Flow/HelperModules/index.md
+      - primer.py: Flow/HelperModules/primer.py.md
+      - offsetter.py: Flow/HelperModules/offsetter.py.md
+    - Kivy GUI Related Modules:
+      - Flow/KivyGUIRelatedModules/index.md
+      - veritas.kv: Flow/KivyGUIRelatedModules/veritas.kv.md
+      - colors.py: Flow/KivyGUIRelatedModules/colors.py.md
 plugins:
   - social
 

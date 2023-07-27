@@ -1,6 +1,8 @@
 veritasdocs/
 Scripts/
 pyvenv.cfg
+veritasdocs.sublime-project
+veritasdocs.sublime-workspace
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

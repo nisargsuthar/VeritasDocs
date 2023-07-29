@@ -7,9 +7,8 @@ description: Understand the project flow and working of the modules.
 
 ``` mermaid
 graph TD
-of[veritas.py > openFile] --> lfcb[veritas.py > loadFileCallback];
+of[veritas.py > openFile] --> lf[loader.py > loadFile];
 
-lfcb[veritas.py > loadFileCallback] --> lf[loader.py > loadFile];
 lf[loader.py > loadFile] --> aa[loader.py > isArtifactA];
 aa[loader.py > isArtifactA] -->|No| ab[loader.py > isArtifactB];
 aa[loader.py > isArtifactA] -->|Yes| as{Artifact Supported?};
